@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	model2 "github.com/inxy-payments/signature-sdk-go/model"
+	"github.com/inxy-payments/signature-sdk-go/model"
 )
 
-func (rss *rsaSignatureService) SignMessage(message model2.Message) (*model2.Signature, error) {
+func (rss *rsaSignatureService) SignMessage(message model.Message) (*model.Signature, error) {
 	payload := strings.ToLower(message.Payload) + "_" + strconv.Itoa(int(message.Time))
 	hashed := sha256.Sum256([]byte(payload))
 	signature, err := rsa.SignPKCS1v15(rand.Reader, rss.privateKey, crypto.SHA256, hashed[:])
@@ -20,7 +20,7 @@ func (rss *rsaSignatureService) SignMessage(message model2.Message) (*model2.Sig
 		return nil, err
 	}
 
-	return &model2.Signature{
+	return &model.Signature{
 		Time:      message.Time,
 		Signature: base64.StdEncoding.EncodeToString(signature),
 	}, nil
