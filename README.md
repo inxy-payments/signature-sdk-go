@@ -15,16 +15,16 @@ go get github.com/inxy-payments/signature-sdk-go
 ## Usage
 Below is an example of how to use the signature-sdk-go package to sign a message and verify the signature.
 
-## Example
+## Example private key as string
 
 ```go
 package main
 
 import (
 	"fmt"
-	"github.com/inxy-payments/signature-sdk-go/pkg/converter"
-	"github.com/inxy-payments/signature-sdk-go/pkg/model"
-	rsaSignatureService "github.com/inxy-payments/signature-sdk-go/pkg/service/rsa"
+	"github.com/inxy-payments/signature-sdk-go/converter"
+	"github.com/inxy-payments/signature-sdk-go/model"
+	rsaSignatureService "github.com/inxy-payments/signature-sdk-go/service/rsa"
 	"log"
 )
 
@@ -48,6 +48,61 @@ func main() {
 	fmt.Println(signature.Signature)
 }
 
+```
 
+## Example private key as pem file
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/inxy-payments/signature-sdk-go/converter"
+	"github.com/inxy-payments/signature-sdk-go/model"
+	"github.com/inxy-payments/signature-sdk-go/service/rsa"
+)
+
+func main() {
+	const privateKeyFileName = "private_key.pem"
+
+	var pemData []byte
+
+	file, err := os.Open(privateKeyFileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		pemData = append(pemData, scanner.Bytes()...)
+	}
+
+	err = scanner.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	privateKey, err := converter.ToRSAPrivateKeyFromPem(pemData)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	service := rsa.NewRSASignatureService(privateKey)
+	message := model.NewMessage("test message")
+
+	signature, err := service.SignMessage(message)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(signature.Time)
+	fmt.Println(signature.Signature)
+}
 
 ```

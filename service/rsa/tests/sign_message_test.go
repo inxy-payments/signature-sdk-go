@@ -10,9 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/inxy-payments/signature-sdk-go/pkg/converter"
-	"github.com/inxy-payments/signature-sdk-go/pkg/model"
-	rsaService "github.com/inxy-payments/signature-sdk-go/pkg/service/rsa"
+	"github.com/inxy-payments/signature-sdk-go/converter"
+	model2 "github.com/inxy-payments/signature-sdk-go/model"
+	rsaService "github.com/inxy-payments/signature-sdk-go/service/rsa"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/stretchr/testify/require"
@@ -37,7 +38,7 @@ func TestSignMessage(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *model.Signature
+		want *model2.Signature
 		err  error
 	}{
 		{
@@ -47,7 +48,7 @@ func TestSignMessage(t *testing.T) {
 				timestamp:  timestamp,
 				privateKey: privateKey,
 			},
-			want: &model.Signature{
+			want: &model2.Signature{
 				Time: timestamp,
 			},
 			err: nil,
@@ -59,10 +60,10 @@ func TestSignMessage(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			var signature *model.Signature
+			var signature *model2.Signature
 
 			service := rsaService.NewRSASignatureService(tt.args.privateKey)
-			message := model.NewMessageWithTimestamp(tt.args.payload, tt.args.timestamp)
+			message := model2.NewMessageWithTimestamp(tt.args.payload, tt.args.timestamp)
 
 			signature, err = service.SignMessage(message)
 			if tt.err != nil && err != nil {

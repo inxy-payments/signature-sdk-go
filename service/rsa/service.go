@@ -3,7 +3,7 @@ package rsa
 import (
 	"crypto/rsa"
 
-	"github.com/inxy-payments/signature-sdk-go/pkg/service"
+	"github.com/inxy-payments/signature-sdk-go/service"
 )
 
 type rsaSignatureService struct {

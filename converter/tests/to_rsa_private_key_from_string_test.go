@@ -7,7 +7,8 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"github.com/inxy-payments/signature-sdk-go/pkg/converter"
+	"github.com/inxy-payments/signature-sdk-go/converter"
+
 	"github.com/stretchr/testify/assert"
 )
 
