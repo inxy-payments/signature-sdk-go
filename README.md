@@ -56,7 +56,6 @@ func main() {
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -71,19 +70,15 @@ func main() {
 
 	var pemData []byte
 
-	file, err := os.Open(privateKeyFileName)
+	_, err := os.Stat(privateKeyFileName)
+	if err != nil && os.IsNotExist(err) {
+		log.Fatalf("File does not exist: %s", privateKeyFileName)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		pemData = append(pemData, scanner.Bytes()...)
-	}
-
-	err = scanner.Err()
+	pemData, err = os.ReadFile(privateKeyFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
